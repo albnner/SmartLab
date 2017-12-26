@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1514217006 source:d:\my_file\university\smartlab\works\hybridec_gph\main.cpp
+	<iostream>
+	<fstream>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<vector>
+	"TS.h"
+	<time.h>
+	<ctype.h>
+
+1513950210 d:\my_file\university\smartlab\works\hybridec_gph\ts.h
+	<iostream>
+	<math.h>
+	<stdlib.h>
+	<vector>
+	<time.h>
+
+1513477364 source:d:\my_file\university\smartlab\works\hybridec_gph\ts.h
+	<iostream>
+	<math.h>
+	<stdlib.h>
+	<vector>
+
+1514283671 source:d:\my_file\university\smartlab\works\hybridec_gph\ts.cpp
+	"TS.h"
+

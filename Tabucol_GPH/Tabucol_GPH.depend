@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1514283489 source:d:\my_file\university\smartlab\works\tabucol_gph\main.cpp
+	<iostream>
+	<fstream>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<time.h>
+	<vector>
+	<ctype.h>
+
