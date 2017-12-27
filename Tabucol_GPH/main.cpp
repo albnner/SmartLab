@@ -355,7 +355,7 @@ void Update(Neighborstep &step_move, int delta)
     //更新冲突数
     CF =  CF + delta;
     //更新禁忌表
-    Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 10);
+    Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 15);
     //更新颜色对应表
     Color[step_move.v] = step_move.di;
 
@@ -407,7 +407,7 @@ void Log_Record()
 
     Log << K << ",";
     Log << iter << ",";
-    Log << runtime << "s" << ",";
+    Log << runtime << ",";
     Log << CF_best;
     Log << "\n";
 }
@@ -416,9 +416,10 @@ int main()
 {
     for( int i=0; i<500; i++ )
     {
-        file_name = "DSJC250.5.col";
+        iter =0;
+        file_name = "DSJC500.1.col";
         Graph_Generate();
-        K = 28;
+        K = 12;
 
         f_repeat = new double *[N];
         for( int i=0; i<N; i++ )
@@ -475,7 +476,7 @@ int main()
                 cout << "K=" << K << " " << "\titeration:" << iter;
             }
 
-            cout << "\ttime:" << runtime << "s" << endl;
+            cout << "\ttime:" << runtime << endl;
 
 
             //cout << iter << " " << CF << endl;
