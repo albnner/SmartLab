@@ -8,9 +8,10 @@ extern int **Graph;
 int CF_T,CF_T_best;
 int **Adjacent_Color_Table;
 int **Tabu_List;
-int iter_t=0,  max_iter_t = 1000000;
+int iter_t=0,  max_iter_t = 3000000;
 int *Color;
 
+int *Best_Solution_T;
 
 Neighborstep::Neighborstep(int v1, int si1, int di1)
 {
@@ -42,6 +43,7 @@ void Arr_To_Inde( vector <int> *S )
 void Color_Array_Generate()
 {
     Color = new int [N];
+    Best_Solution_T = new int [N];
 }
 
 void AdjacentColor_Table_Init()
@@ -233,6 +235,8 @@ void Tabu_Search(vector <int> *S)
         if( CF_T_best > CF_T)
         {
             CF_T_best = CF_T;
+            Best_Solution_T = Color;
+            cout << CF_T_best << " ";
         }
 
         if( CF_T_best < CF_T )
