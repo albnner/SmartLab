@@ -16,7 +16,7 @@ int **Graph;
 int *Color;
 int **Adjacent_Color_Table;
 int **Tabu_List;
-int iter=0, max_iter=4000000;
+int iter=0, max_iter=3000000;
 
 int iter_temp = 0;
 double ** f_repeat;
@@ -350,8 +350,8 @@ void Update(Neighborstep &step_move, int delta)
         }
     }
     //更新频率数
-    f_repeat[step_move.v][step_move.di]++;
-    max_f = ( max_f < f_repeat[step_move.v][step_move.di] ) ? f_repeat[step_move.v][step_move.di] : max_f;
+    //f_repeat[step_move.v][step_move.di]++;
+    //max_f = ( max_f < f_repeat[step_move.v][step_move.di] ) ? f_repeat[step_move.v][step_move.di] : max_f;
     //更新冲突数
     CF =  CF + delta;
     //更新禁忌表
@@ -374,7 +374,7 @@ void Update(Neighborstep &step_move, int delta)
         for( int j=0; j<K; j++ )
             max_f = ( max_f < f_repeat[i][j] ) ? f_repeat[i][j] : max_f;*/
     //if( f_repeat[step_move.v][step_move.di] > iter/10 )
-    Tabu_List[step_move.v][step_move.di] += ( f_repeat[step_move.v][step_move.di] / max_f ) * 15;
+    //Tabu_List[step_move.v][step_move.di] += ( f_repeat[step_move.v][step_move.di] / max_f ) * 15;
 }
 
 
@@ -414,11 +414,11 @@ void Log_Record()
 
 int main()
 {
-    for( int i=0; i<10; i++ )
+    for( int i=0; i<500; i++ )
     {
-        file_name = "DSJC500.5.col";
+        file_name = "DSJC250.5.col";
         Graph_Generate();
-        K = 49;
+        K = 28;
 
         f_repeat = new double *[N];
         for( int i=0; i<N; i++ )
