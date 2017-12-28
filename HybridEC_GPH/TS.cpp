@@ -8,7 +8,7 @@ extern int **Graph;
 int CF_T,CF_T_best;
 int **Adjacent_Color_Table;
 int **Tabu_List;
-int iter_t=0,  max_iter_t = 3000000;
+int iter_t=0,  max_iter_t = 40000;
 int *Color;
 
 int *Best_Solution_T;
@@ -208,7 +208,7 @@ int Conflict_Calculate(vector <int> *S)
     return CF_T_2;
 }
 
-void Tabu_Search(vector <int> *S)
+int Tabu_Search(vector <int> *S)
 {
     //禁忌搜索初始化准备
     iter_t = 0;
@@ -235,18 +235,21 @@ void Tabu_Search(vector <int> *S)
         if( CF_T_best > CF_T)
         {
             CF_T_best = CF_T;
-            Best_Solution_T = Color;
-            cout << CF_T_best << " ";
+            for( int i=0; i<N; i++ )
+                Best_Solution_T[i] = Color[i];
+            //cout << CF_T_best << " ";
         }
+        if( iter_t > max_iter_t )
+            break;
 
-        if( CF_T_best < CF_T )
+        /*if( CF_T_best < CF_T )
         {
             breakiter ++;
             if( breakiter > max_iter_t )
                 break;
         }
         else
-            breakiter = 0;
+            breakiter = 0;*/
     }
     Arr_To_Inde(S);
     //cout << CF_T_best << "\t";
@@ -256,6 +259,8 @@ void Tabu_Search(vector <int> *S)
     delete Adjacent_Color_Table;
     delete Tabu_List;
     delete Best_Solution_T;
+
+    return CF_T_best;
     //cout << "4" << "\t" << Color[Solution[4].front()] << endl;
     //cout << "7" << "\t" << Color[Solution[7].front()] << endl;
 }

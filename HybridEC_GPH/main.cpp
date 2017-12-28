@@ -155,12 +155,12 @@ void Population_Init()
 void Best_Find()
 {
     vector <int> Best_Label;
-    CF = new int [P_num];
-    for( int i=0; i<P_num; i++ )
+    //CF = new int [P_num];
+    /*for( int i=0; i<P_num; i++ )
     {
         CF[i] = Conflict_Calculate( Population[i] );
         //cout << CF[i] << "\t";
-    }
+    }*/
     //cout << endl;
     //CF[0] = 2;
     //CF[1] = 4;
@@ -310,6 +310,7 @@ void Pool_Update( vector<int>*g )
     int k = rand() % Worst_Label.size();
     if( gen_conf <= CF_worst )
     {
+        CF[ Worst_Label.at(k) ] = gen_conf;
         breakiter++;
         for( int i=0; i<K; i++ )
         {
@@ -326,7 +327,7 @@ void Pool_Update( vector<int>*g )
 int main( int argc,char*argv[] )
 {
     file_name = "DSJC500.5.col";
-    P_num = 10;
+    P_num = 3;
     K = 48;
     srand (time(0));
 
@@ -336,6 +337,9 @@ int main( int argc,char*argv[] )
     //vector <int> * p1;
     //vector <int> * p2;
     Graph_Generate();
+
+    CF = new int [P_num];
+
     CF_best = E;
     Population_Init();
     double t_temp;
@@ -343,7 +347,7 @@ int main( int argc,char*argv[] )
     for( int i=0; i<P_num; i++ )
     {
         t_s = clock();
-        Tabu_Search(Population[i]);
+        CF[i] = Tabu_Search(Population[i]);
         t_f = clock();
         t_temp = (double)(t_f-t_s)/CLOCKS_PER_SEC;
         cout << "solution" << i << " local search finish!" << "\t" ;
@@ -374,9 +378,9 @@ int main( int argc,char*argv[] )
 
         start_t = clock();
 
-        Tabu_Search(gen);
+        gen_conf = Tabu_Search(gen);
         cout << "tabu_finish" << "\t";
-        gen_conf = Conflict_Calculate(gen);
+        //gen_conf = Conflict_Calculate(gen);
         cout << "gen_conf:" << gen_conf << "\t";
         finish_t = clock();
 

@@ -355,7 +355,7 @@ void Update(Neighborstep &step_move, int delta)
     //更新冲突数
     CF =  CF + delta;
     //更新禁忌表
-    Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 12);
+    Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 10);
     //更新颜色对应表
     Color[step_move.v] = step_move.di;
 
@@ -400,6 +400,12 @@ void Log_Record()
         log_file_name = "DSJC500.5.csv";
     if( file_name == "DSJC500.9.col" )
         log_file_name = "DSJC500.9.csv";
+    if( file_name == "DSJC1000.1.col" )
+        log_file_name = "DSJC1000.1.csv";
+    if( file_name == "DSJC1000.5.col" )
+        log_file_name = "DSJC1000.5.csv";
+    if( file_name == "DSJC1000.9.col" )
+        log_file_name = "DSJC1000.9.csv";
 
     Log.open( log_file_name, ios::app );
     if( Log.fail() )
@@ -417,9 +423,9 @@ int main()
     for( int i=0; i<30; i++ )
     {
         iter =0;
-        file_name = "DSJC500.5.col";
+        file_name = "DSJC1000.1.col";
         Graph_Generate();
-        K = 50;
+        K = 20;
 
         //f_repeat = new double *[N];
         /*for( int i=0; i<N; i++ )
@@ -492,84 +498,6 @@ int main()
         delete Tabu_List;
     }
 
-    for( int i=0; i<30; i++ )
-    {
-        iter =0;
-        file_name = "DSJC500.5.col";
-        Graph_Generate();
-        K = 12;
-
-        //f_repeat = new double *[N];
-        /*for( int i=0; i<N; i++ )
-        {
-            f_repeat[i] = new double [K];
-        }*/
-
-        srand (time(0));
-        while(K)
-        {
-            int breakiter = 0;
-            max_f = 0;
-            clock_t start,finish;
-            //srand (time(0));
-            ColorArray_Generate();
-            AdjacentColor_Table_Init();
-            ConflictNum_Init();
-            Tabu_Init();
-            cout << CF_best << "\t";
-            start = clock();
-            while( CF_best )
-            {
-                Move();
-                if( CF_best > CF)
-                {
-                    cout << CF_best << "  ";
-                    CF_best = CF;
-                }
-                finish = clock();
-                runtime = (double)(finish-start)/CLOCKS_PER_SEC;
-                if( runtime > 400 )
-                    break;
-                /*if( CF_best < CF )
-                {
-                    breakiter++;
-                    if( breakiter > max_iter)
-                        break;
-                }
-                else
-                    breakiter = 0;*/
-            }
-            cout << endl;
-
-
-
-            Log_Record();
-
-            if( breakiter > max_iter )
-            {
-                cout << "cannot find solution for K=" << K << endl << "for this K, CF_best is:" << CF_best << endl;
-                cout << "iter:" << iter << "\t" << "time:" << runtime << endl;
-                cout << "the minimum of K is" << K+1 << endl;
-                break;
-            }
-            else
-            {
-                cout << "K=" << K << " " << "\titeration:" << iter;
-            }
-
-            cout << "\ttime:" << runtime << endl;
-
-
-            //cout << iter << " " << CF << endl;
-            //--K;
-            K = 0;
-        }
-
-        delete Graph;
-        delete Color;
-        delete Adjacent_Color_Table;
-        delete Tabu_List;
-    }
     //cout << Graph[2][0] << endl;
     /*cout << Adjacent_Color_Table[0][0] << " " << Adjacent_Color_Table[0][1] << " " << Adjacent_Color_Table[0][2] << endl;
     cout << Adjacent_Color_Table[1][0] << " " << Adjacent_Color_Table[1][1] << " " << Adjacent_Color_Table[1][2] << endl;

@@ -26,7 +26,7 @@
 1514283671 source:d:\my_file\university\smartlab\works\hybridec_gph\ts.cpp
 	"TS.h"
 
-1514379627 source:d:\my_file\github\smartlab\hybridec_gph\main.cpp
+1514476772 source:d:\my_file\github\smartlab\hybridec_gph\main.cpp
 	<iostream>
 	<fstream>
 	<string.h>
@@ -37,13 +37,20 @@
 	<time.h>
 	<ctype.h>
 
-1514292290 d:\my_file\github\smartlab\hybridec_gph\ts.h
+1514475766 d:\my_file\github\smartlab\hybridec_gph\ts.h
 	<iostream>
 	<math.h>
 	<stdlib.h>
 	<vector>
 	<time.h>
 
-1514437012 source:d:\my_file\github\smartlab\hybridec_gph\ts.cpp
+1514477274 source:d:\my_file\github\smartlab\hybridec_gph\ts.cpp
 	"TS.h"
+
+1514475766 source:d:\my_file\github\smartlab\hybridec_gph\ts.h
+	<iostream>
+	<math.h>
+	<stdlib.h>
+	<vector>
+	<time.h>
 

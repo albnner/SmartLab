@@ -29,6 +29,6 @@ void Tabu_Init();
 void Move();
 void Update(Neighborstep &, int );
 int Conflict_Calculate(vector <int> *);
-void Tabu_Search(vector <int> *);
+int Tabu_Search(vector <int> *);
 
 #endif // TS_H_INCLUDED

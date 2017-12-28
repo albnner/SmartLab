@@ -36,6 +36,7 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="TS.h">
+			<Option compile="1" />
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="main.cpp" />
