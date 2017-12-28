@@ -355,7 +355,7 @@ void Update(Neighborstep &step_move, int delta)
     //更新冲突数
     CF =  CF + delta;
     //更新禁忌表
-    Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 14);
+    Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 12);
     //更新颜色对应表
     Color[step_move.v] = step_move.di;
 
@@ -419,7 +419,7 @@ int main()
         iter =0;
         file_name = "DSJC500.5.col";
         Graph_Generate();
-        K = 48;
+        K = 50;
 
         //f_repeat = new double *[N];
         /*for( int i=0; i<N; i++ )
