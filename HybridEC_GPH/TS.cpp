@@ -37,7 +37,7 @@ void Arr_To_Inde( vector <int> *S )
     for( int i=0; i<K; i++ )
         S[i].clear();
     for( int j=0; j<N; j++ )
-        S[Color[j]].push_back(j);
+        S[Best_Solution_T[j]].push_back(j);
 }
 
 void Color_Array_Generate()
@@ -255,6 +255,7 @@ void Tabu_Search(vector <int> *S)
     delete Color;
     delete Adjacent_Color_Table;
     delete Tabu_List;
+    delete Best_Solution_T;
     //cout << "4" << "\t" << Color[Solution[4].front()] << endl;
     //cout << "7" << "\t" << Color[Solution[7].front()] << endl;
 }
