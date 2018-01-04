@@ -1,6 +1,6 @@
 #include "TS.h"
 
-using namespace std;
+
 
 extern int N,K,E;
 extern int **Graph;
@@ -8,7 +8,7 @@ extern int **Graph;
 int CF_T,CF_T_best;
 int **Adjacent_Color_Table;
 int **Tabu_List;
-int iter_t=0,  max_iter_t = 40000;
+int iter_t=0,  max_iter_t = 100000;
 int *Color;
 
 int *Best_Solution_T;

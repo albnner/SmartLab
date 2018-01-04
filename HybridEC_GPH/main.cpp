@@ -327,7 +327,7 @@ void Pool_Update( vector<int>*g )
 int main( int argc,char*argv[] )
 {
     file_name = "DSJC500.5.col";
-    P_num = 3;
+    P_num = 2;
     K = 48;
     srand (time(0));
 
