@@ -10,23 +10,25 @@
 using namespace std;
 
 char *file_name;
-FILE *fp;
 int N,E,K,CF,CF_best;
 int **Graph;
 int *Color;
 int **Adjacent_Color_Table;
 int **Tabu_List;
 int iter=0, max_iter=3000000;
-
-int iter_temp = 0;
-double ** f_repeat;
-double max_f = 0;
+vector <int> Conflict_Vertice;           //记录冲突节点
+int *Conflict_Vertice_Position;         //记录冲突节点在数组中的位置
+int length;                              //冲突节点表的长度
+//int iter_temp = 0;
+//double ** f_repeat;
+//double max_f = 0;
 
 double runtime;
 
 
-class Neighborstep{
-    public:
+class Neighborstep
+{
+public:
     int v;   //动作顶点
     int si;  //原颜色
     int di;  //目标颜色
@@ -40,7 +42,9 @@ class Neighborstep{
 
     Neighborstep()
     {
-        v=0; si=0; di=0;
+        v=0;
+        si=0;
+        di=0;
     }
 
 };
@@ -92,107 +96,7 @@ void Graph_Generate()
     //cout<<"Graph[6][3]:"<<Graph[6][3]<<endl;
 }
 
-/*class Adjacent_List{
-    public:
-        int v_value;
-        Adjacent_List *next;
 
-        Adjacent_List()
-        {
-            v_value = 0;
-            next = NULL;
-        }
-};*/
-/*typedef struct Adjacent_List{
-         int v_value ;
-         struct Adjacent_List *next ;
-         }Adjacent ;
-Adjacent * *Ad_list ;
-
-//Adjacent_List **Ad_list;
-
-void Graph_Generate()
-{
-    int i,v1,v2;
-    Adjacent *a, *b;
-    ifstream F;
-    F.open(file_name);
-    char blank1[100],blank2[50];
-    F >> blank1;
-    while( !F.eof() )
-    {
-        if( strcmp( blank1, "p" ) == 0)
-        {
-            F >> blank1 >> N >> E;
-            cout << "Number of vertexes:" << N << endl;
-            cout << "Number of edges:" << E << endl;
-            Ad_list = new Adjacent *[N];
-            for( i=0; i<N; i++)
-            {
-                Ad_list[i] = new Adjacent;
-                Ad_list[ i ]->v_value = 0 ;
-                Ad_list[ i ]->next = NULL ;
-            }
-
-            for(i=0; i<E; i++)
-            {
-                F >> blank2;
-                F >> v1 >> v2;
-                v1--;v2--;
-                a = Ad_list[v1];
-                while( a->next != NULL )
-                    a = a->next;
-                b = new Adjacent;
-                b->v_value = v2;
-                b->next = NULL;
-                a->next = b;
-                //cout << (a->next)->v_value;
-
-                a = Ad_list[v2];
-                while( a->next != NULL )
-                    a = a->next;
-                b = new Adjacent;
-                b->v_value = v1;
-                b->next = NULL;
-                a->next = b;
-            }
-        }
-        F >> blank1;
-    }
-    F.close();
-
-    /*F.open(file_name);
-    F >> blank2;
-
-    Adjacent_List *a,*b;
-    while( !F.eof() )
-    {
-        if( strcmp( blank2, "e" ) == 0 )
-        {
-            F >> v1 >> v2;
-            v1--;
-            v2--;
-            a = Ad_list[v1];
-            while( a->next != NULL )
-                a = a->next;
-            b = new Adjacent_List;
-            b->v_value = v2;
-            b->next = NULL;
-            a->next = b;
-            //cout << (a->next)->v_value;
-
-            a = Ad_list[v2];
-            while( a->next != NULL )
-                a = a->next;
-            b = new Adjacent_List;
-            b->v_value = v1;
-            b->next = NULL;
-            a->next = b;
-        }
-        F >> blank1;
-    }
-    F.close();
-}*/
 
 void ColorArray_Generate()
 {
@@ -237,6 +141,24 @@ void AdjacentColor_Table_Init()
 
 }
 
+void Confilct_Vertice_Vector_Init()
+{
+    Conflict_Vertice_Position = new int [N];
+    int l = 0;  //冲突节点表长度
+
+    for( int i=0; i<N; i++ )
+    {
+        if( Adjacent_Color_Table[i][Color[i]] != 0 )
+        {
+            Conflict_Vertice.push_back( i );
+            Conflict_Vertice_Position[i] = l;
+            l++;
+        }
+    }
+    length = Conflict_Vertice.size();
+}
+
+
 void ConflictNum_Init()
 {
     CF=0;
@@ -273,54 +195,54 @@ void Move()
     void Update(Neighborstep &step_move, int delta_ture);
     int delta_Tabu=0,delta_NoTabu=0,delta_Tabu_min=K,delta_NoTabu_min=K;
     //Neighborstep step_best;
-    for( int i=0; i<N; i++ )
+    for( int i=0; i<length; i++ )
     {
-        if( Adjacent_Color_Table[i][Color[i]] != 0 )   //冲突数不为0则需动作
+//        if( Adjacent_Color_Table[i][Color[i]] != 0 )   //冲突数不为0则需动作
+//        {
+        int c_v = Conflict_Vertice[ i ];     //冲突节点
+        int j=0;
+        while(j<K)
         {
-            int j=0;
-            while(j<K)
+            if( j==Color[c_v] )
             {
-                if( j==Color[i] )
-                {
-                    j++;
-                    continue;
-                }
-                if( Tabu_List[i][j] > iter)              //是否为禁忌的动作
-                {
-                    delta_Tabu = Adjacent_Color_Table[i][j] - Adjacent_Color_Table[i][Color[i]];
-                    if( delta_Tabu < delta_Tabu_min )           //存储禁忌动作的最优值
-                    {
-                        delta_Tabu_min = delta_Tabu;
-                        step_best_t.clear();
-                        step_best_t.push_back(Neighborstep(i, Color[i], j));
-                    }
-                    else if( delta_Tabu == delta_Tabu_min )
-                    {
-                        step_best_t.push_back(Neighborstep(i, Color[i], j));
-                    }
-                }
-                else
-                {
-                    delta_NoTabu = Adjacent_Color_Table[i][j] - Adjacent_Color_Table[i][Color[i]];
-                    if( delta_NoTabu < delta_NoTabu_min )        //存储非禁忌动作的最优值
-                    {
-                        delta_NoTabu_min = delta_NoTabu;
-                        step_best_nt.clear();
-                        step_best_nt.push_back(Neighborstep(i, Color[i], j));
-                    }
-                    else if( delta_NoTabu == delta_NoTabu_min )
-                    {
-                        step_best_nt.push_back(Neighborstep(i, Color[i], j));
-                    }
-                }
                 j++;
+                continue;
             }
+            if( Tabu_List[c_v][j] > iter)              //是否为禁忌的动作
+            {
+                delta_Tabu = Adjacent_Color_Table[c_v][j] - Adjacent_Color_Table[c_v][Color[c_v]];
+                if( delta_Tabu < delta_Tabu_min )           //存储禁忌动作的最优值
+                {
+                    delta_Tabu_min = delta_Tabu;
+                    step_best_t.clear();
+                    step_best_t.push_back(Neighborstep(c_v, Color[c_v], j));
+                }
+                else if( delta_Tabu == delta_Tabu_min )
+                {
+                    step_best_t.push_back(Neighborstep(c_v, Color[c_v], j));
+                }
+            }
+            else
+            {
+                delta_NoTabu = Adjacent_Color_Table[c_v][j] - Adjacent_Color_Table[c_v][Color[c_v]];
+                if( delta_NoTabu < delta_NoTabu_min )        //存储非禁忌动作的最优值
+                {
+                    delta_NoTabu_min = delta_NoTabu;
+                    step_best_nt.clear();
+                    step_best_nt.push_back(Neighborstep(c_v, Color[c_v], j));
+                }
+                else if( delta_NoTabu == delta_NoTabu_min )
+                {
+                    step_best_nt.push_back(Neighborstep(c_v, Color[c_v], j));
+                }
+            }
+            j++;
         }
+//        }
     }
     iter++;
     if( delta_Tabu_min + CF < CF_best && delta_Tabu_min < delta_NoTabu_min )       //释放准则：禁忌动作是历史最优解
     {
-        //srand (time(0));
         int k = (rand() % step_best_t.size());
         step_best = step_best_t[k];
         Update(step_best, delta_Tabu_min);
@@ -328,7 +250,6 @@ void Move()
     else                                              //按非禁忌最优动作进行动作
     {
         int k = (rand() % step_best_nt.size());
-        //cout << k << "\t";
         step_best = step_best_nt[k];
         Update(step_best, delta_NoTabu_min);
     }
@@ -336,45 +257,48 @@ void Move()
 
 void Update(Neighborstep &step_move, int delta)
 {
-    int i;
     //更新Adjacent_Color_Table
-    for( i=0; i<N; i++)
+    for( int i=0; i<N; i++)
     {
         if( Graph[step_move.v][i] )
         {
             Adjacent_Color_Table[i][step_move.si]--;
             Adjacent_Color_Table[i][step_move.di]++;
-            //f_repeat[i][step_move.si]++;
-            //max_f = ( max_f < f_repeat[i][step_move.si] ) ? f_repeat[i][step_move.si] : max_f;
-            //f_repeat[i][step_move.di] /= iter;
+            //更新冲突结点表
+            if( step_move.si == Color[i] && Adjacent_Color_Table[i][Color[i]] == 0 )
+            {
+                int p1 = Conflict_Vertice_Position[ i ];
+                int p_last = Conflict_Vertice.back();
+                Conflict_Vertice[ Conflict_Vertice_Position[i] ] = Conflict_Vertice.back();
+                Conflict_Vertice.pop_back();
+                Conflict_Vertice_Position[ p_last ] = p1;
+                length--;
+            }
+            if( step_move.di == Color[i] && Adjacent_Color_Table[i][Color[i]] == 1 )
+            {
+                Conflict_Vertice.push_back( i );
+                Conflict_Vertice_Position[ i ] = length;
+                length++;
+            }
         }
     }
-    //更新频率数
-    //f_repeat[step_move.v][step_move.di]++;
-    //max_f = ( max_f < f_repeat[step_move.v][step_move.di] ) ? f_repeat[step_move.v][step_move.di] : max_f;
+    //如果自己也不冲突了，从冲突表中剔除
+    if( Adjacent_Color_Table[step_move.v][step_move.di] == 0 )
+    {
+        int p = step_move.v;
+        int p1 = Conflict_Vertice_Position[ p ];
+        int p_last = Conflict_Vertice.back();
+        Conflict_Vertice[ Conflict_Vertice_Position[p] ] = Conflict_Vertice.back();
+        Conflict_Vertice.pop_back();
+        Conflict_Vertice_Position[ p_last ] = p1;
+        length--;
+    }
     //更新冲突数
     CF =  CF + delta;
     //更新禁忌表
     Tabu_List[step_move.v][step_move.si] = CF + iter + (rand() % 10);
     //更新颜色对应表
     Color[step_move.v] = step_move.di;
-
-    //根据重复频率动态调整禁忌步长
-
-    /*iter_temp ++;
-    if( iter_temp > 100000  )
-    {
-        iter_temp = 0;
-        for( int i=0; i<N; i++ )
-            for( int j=0; j<K; j++ )
-                f_repeat[i][j] = 0;
-    }*/
-    //double max_f = 0;
-    /*for( int i=0; i<N; i++ )
-        for( int j=0; j<K; j++ )
-            max_f = ( max_f < f_repeat[i][j] ) ? f_repeat[i][j] : max_f;*/
-    //if( f_repeat[step_move.v][step_move.di] > iter/10 )
-    //Tabu_List[step_move.v][step_move.di] += ( f_repeat[step_move.v][step_move.di] / max_f ) * 15;
 }
 
 
@@ -420,77 +344,128 @@ void Log_Record()
 
 int main()
 {
-    for( int i=0; i<30; i++ )
+    for( int i=0; i<5; i++ )
     {
         iter =0;
-        file_name = "DSJC1000.1.col";
+        int breakiter = 0;
+        //图生成
+        file_name = "DSJC500.5.col";
         Graph_Generate();
-        K = 20;
-
-        //f_repeat = new double *[N];
-        /*for( int i=0; i<N; i++ )
-        {
-            f_repeat[i] = new double [K];
-        }*/
-
+        K = 49;
+        //随机种子
         srand (time(0));
-        while(K)
+
+//        max_f = 0;
+        //各种表的初始化
+        ColorArray_Generate();
+        Color = new int[N];
+//        Color[0] = 0;
+//        Color[1] = 1;
+//        Color[2] = 0;
+//        Color[3] = 0;
+//        Color[4] = 2;
+//        Color[5] = 2;
+//        Color[6] = 1;
+//        Color[7] = 1;
+//        Color[8] = 2;
+
+        AdjacentColor_Table_Init();
+
+//        for( int i=0; i<N; i++ )
+//            cout << Adjacent_Color_Table[i][0] << "\t" << Adjacent_Color_Table[i][1] << "\t" << Adjacent_Color_Table[i][2] << endl;
+
+        Confilct_Vertice_Vector_Init();
+        ConflictNum_Init();
+        Tabu_Init();
+        cout << CF_best << "\t";
+        cout << endl;
+        //时间记录
+        clock_t start,finish;
+        start = clock();
+
+//        for( int i=0; i<length; i++ )
+//            cout << Conflict_Vertice[i] << "\t";
+//        cout << endl;
+//        for( int i=0; i<N; i++ )
+//            cout << Conflict_Vertice_Position[i] << "\t";
+//        cout << endl;
+//
+//        Move();
+//        for( int i=0; i<length; i++ )
+//            cout << Conflict_Vertice[i] << "\t";
+//        cout << endl;
+//        for( int i=0; i<N; i++ )
+//            cout << Conflict_Vertice_Position[i] << "\t";
+//        cout << endl;
+
+        //开始搜索
+        while( CF_best )
         {
-            int breakiter = 0;
-            max_f = 0;
-            clock_t start,finish;
-            //srand (time(0));
-            ColorArray_Generate();
-            AdjacentColor_Table_Init();
-            ConflictNum_Init();
-            Tabu_Init();
-            cout << CF_best << "\t";
-            start = clock();
-            while( CF_best )
+//            for( int i=0; i<length; i++ )
+//                cout << Conflict_Vertice[i] << "\t";
+//            cout << endl;
+//            for( int i=0; i<N; i++ )
+//                cout << Conflict_Vertice_Position[i] << "\t";
+//            cout << endl;
+
+            Move();
+//            for( int i=0; i<N; i++ )
+//                cout << Color[i] << "\t";
+//            cout << endl;
+//
+//
+//            for( int i=0; i<N; i++ )
+//                cout << Adjacent_Color_Table[i][0] << "\t" << Adjacent_Color_Table[i][1] << "\t" << Adjacent_Color_Table[i][2] << endl;
+//
+//            for( int i=0; i<length; i++ )
+//                cout << Conflict_Vertice[i] << "\t";
+//            cout << endl;
+//            for( int i=0; i<N; i++ )
+//                cout << Conflict_Vertice_Position[i] << "\t";
+//            cout << endl;
+
+//            finish = clock();
+//            runtime = (double)(finish-start)/CLOCKS_PER_SEC;
+//            if( runtime > 600 )
+//                break;
+            if( CF_best < CF )
             {
-                Move();
-                if( CF_best > CF)
-                {
-                    cout << CF_best << "  ";
-                    CF_best = CF;
-                }
-                finish = clock();
-                runtime = (double)(finish-start)/CLOCKS_PER_SEC;
-                if( runtime > 600 )
+                breakiter++;
+                if( breakiter > max_iter)
                     break;
-                /*if( CF_best < CF )
-                {
-                    breakiter++;
-                    if( breakiter > max_iter)
-                        break;
-                }
-                else
-                    breakiter = 0;*/
-            }
-            cout << endl;
-
-
-            Log_Record();
-
-            if( runtime > 400 )
-            {
-                cout << "cannot find solution for K=" << K << endl << "for this K, CF_best is:" << CF_best << endl;
-                cout << "iter:" << iter << "\t" << "time:" << runtime << endl;
-                cout << "the minimum of K is" << K+1 << endl;
-                break;
             }
             else
+                breakiter = 0;
+
+            if( CF_best > CF)
             {
-                cout << "K=" << K << " " << "\titeration:" << iter;
+                CF_best = CF;
+                cout << CF_best << "  ";
             }
-
-            cout << "\ttime:" << runtime << endl;
-
-
-            //cout << iter << " " << CF << endl;
-            //--K;
-            K = 0;
         }
+        cout << endl;
+        finish = clock();
+        runtime = (double)(finish-start)/CLOCKS_PER_SEC;
+        //写入日志
+        Log_Record();
+        //输出运行结果
+        if( breakiter > max_iter )
+        {
+            cout << "cannot find solution for K=" << K << endl << "for this K, CF_best is:" << CF_best << endl;
+            cout << "iter:" << iter << "\t" << "time:" << runtime << endl;
+            cout << "the minimum of K is" << K+1 << endl;
+        }
+        else
+        {
+            cout << "K=" << K << " " << "\titeration:" << iter;
+        }
+
+        cout << "\ttime:" << runtime << endl;
+
+
+        //cout << iter << " " << CF << endl;
+        //--K;
+
 
         delete Graph;
         delete Color;
@@ -498,21 +473,5 @@ int main()
         delete Tabu_List;
     }
 
-    //cout << Graph[2][0] << endl;
-    /*cout << Adjacent_Color_Table[0][0] << " " << Adjacent_Color_Table[0][1] << " " << Adjacent_Color_Table[0][2] << endl;
-    cout << Adjacent_Color_Table[1][0] << " " << Adjacent_Color_Table[1][1] << " " << Adjacent_Color_Table[1][2] << endl;
-    cout << Adjacent_Color_Table[2][0] << " " << Adjacent_Color_Table[2][1] << " " << Adjacent_Color_Table[2][2] << endl;
-    cout << Adjacent_Color_Table[3][0] << " " << Adjacent_Color_Table[3][1] << " " << Adjacent_Color_Table[3][2] << endl;
-    cout << Adjacent_Color_Table[4][0] << " " << Adjacent_Color_Table[4][1] << " " << Adjacent_Color_Table[4][2] << endl;
-    cout << Adjacent_Color_Table[5][0] << " " << Adjacent_Color_Table[5][1] << " " << Adjacent_Color_Table[5][2] << endl;
-    cout << Adjacent_Color_Table[6][0] << " " << Adjacent_Color_Table[6][1] << " " << Adjacent_Color_Table[6][2] << endl;
-    cout << Adjacent_Color_Table[7][0] << " " << Adjacent_Color_Table[7][1] << " " << Adjacent_Color_Table[7][2] << endl;
-    cout << Adjacent_Color_Table[8][0] << " " << Adjacent_Color_Table[8][1] << " " << Adjacent_Color_Table[8][2] << endl;
-*/
-    //cout << CF << endl;
-    //cout << iter << endl;
-    //cout << Tabu_List[0][0] << endl;
-    //cout << Tabu_Move.v << Tabu_Move.si << Tabu_Move.di << endl;
-    //cout << NoTabu_Move.v << NoTabu_Move.si << NoTabu_Move.di << endl;
     return 0;
 }

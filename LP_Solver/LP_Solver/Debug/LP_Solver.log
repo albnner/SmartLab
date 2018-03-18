@@ -1,0 +1,17 @@
+﻿  lp_solver.cpp
+e:\visual studio\visual 2017\vc\tools\msvc\14.12.25827\include\vector(1764): error C2036: 'solver::LPConstraint *const ': unknown size
+  e:\visual studio\visual 2017\vc\tools\msvc\14.12.25827\include\vector(1763): note: while compiling class template member function 'unsigned int std::vector<solver::LPConstraint,std::allocator<_Ty>>::size(void) noexcept const'
+          with
+          [
+              _Ty=solver::LPConstraint
+          ]
+  d:\my_file\github\smartlab\lp_solver\lp_solver\lp_solver.h(72): note: see reference to function template instantiation 'unsigned int std::vector<solver::LPConstraint,std::allocator<_Ty>>::size(void) noexcept const' being compiled
+          with
+          [
+              _Ty=solver::LPConstraint
+          ]
+  d:\my_file\github\smartlab\lp_solver\lp_solver\lp_solver.h(106): note: see reference to class template instantiation 'std::vector<solver::LPConstraint,std::allocator<_Ty>>' being compiled
+          with
+          [
+              _Ty=solver::LPConstraint
+          ]
