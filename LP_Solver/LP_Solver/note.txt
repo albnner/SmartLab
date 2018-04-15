@@ -1,13 +1,33 @@
 笔记和问题记录
 
-Problem:
-1.不同底层求解器冲突的宏定义
-2.求解器需要的内容结构/功能
-	2.1 对LP有哪些可用于验证的算例
-	2.2 有哪些其他需要解决的典型问题（如TSP,Nqueen等）
-		2.2.1 典型问题的解决思路
-3.VS中文件的可读设置
-4.graph和routing?
-5.有哪些常用的搜索库/搜索算法
-	5.1 自己写or哪里找
-6.进度安排
+/*   Problem    */
+
+2018/3/17
+	1.不同底层求解器冲突的宏定义
+	2.求解器需要的内容结构/功能
+		2.1 对LP有哪些可用于验证的算例
+		2.2 有哪些其他需要解决的典型问题（如TSP,Nqueen等）
+			2.2.1 典型问题的解决思路
+	3.VS中文件的可读设置
+	4.graph和routing?
+	5.有哪些常用的搜索库/搜索算法
+		5.1 自己写or哪里找
+	6.进度安排
+
+2018/3/22
+	1.tsp问题的一些术语和概念
+		1.1 dimension?
+		1.2 local search filter?
+		1.3 local search profile?
+		1.4 核心求解代码在constraint.cc的1819行NewSearch()?
+		1.5 print trace
+
+/*   Note    */
+
+2018/3/22
+1.or-tools中对tsp问题的求解
+	调用cp问题包；
+	使用desicion builder生成搜索树；
+	Slove()可以找出所有可行解，但得不到解的内容（除非使用serach monitor）；
+	NewSearch()找出一个可行解，可以得到内容；
+	可以设置求解参数search_parameters，使用局部搜索来优化
